@@ -9,7 +9,10 @@ This folder contains all structured triples extracted from flood-related data so
 - `triples_from_text/` – Contains `.txt` files with triples extracted from **textual descriptions** of disasters (e.g., ReliefWeb reports).  
 - `triples_from_images/` – Contains `.txt` files with triples extracted from **satellite images**, including RGB (visual), NDWI, and NIR types.
 
-Each file corresponds to a single flood event and contains a list of triples in the form:  
+### 📝 Example: Triples from Text Modality
+
+Below is a real example of structured triples automatically extracted from a **textual report** describing a recent flood in the Democratic Republic of the Congo (April 2025). Each triple captures a fact about the event, grounded in the source document:
+
 ```txt
 (FL-2025-000045-COD, hasCountry, "Democratic Republic of the Congo")  
 (FL-2025-000045-COD, hasISO3, "cod")  
@@ -31,7 +34,9 @@ Each file corresponds to a single flood event and contains a list of triples in 
 (FL-2025-000045-COD, causedBy, "Heavy rainfall")  
 (FL-2025-000045-COD, weatherCause, "Torrential rains")
 ```
-blablalbal
+### 🛰️ Example: Triples from Image Modality (NDWI)
+
+This example shows triples extracted from the **NDWI satellite image** for a 2024 flood in Algeria. These triples describe visual patterns in water saturation, land cover, and flood indicators visible in the image:
 
 ```txt
 (FL-2024-000024-DZA, hasndwiimage, FL-2024-000024-DZA-ndwi)
