@@ -21,8 +21,7 @@ Below is an example of multimodal input data used to extract structured triples 
 
 For each event, the system retrieves and processes three types of satellite images (if existing):
 
-| RGB (Visual) | NIR | NDWI |
-|--------------|-----|------|
-| <img src="imageexamples.png" width="900"/> |
+
+<img src="imageexamples.png" width="900"/>
 
 These images are then passed to different prompt-based extraction scripts to derive semantic triples describing environmental conditions and flood impacts.
