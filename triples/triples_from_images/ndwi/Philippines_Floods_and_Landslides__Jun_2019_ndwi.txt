@@ -1,0 +1,7 @@
+(FL-2019-000120-PHL, hasndwiimage, FL-2019-000120-PHL-ndwi)
+(FL-2019-000120-PHL-ndwi, showsFeature, waterBodies)  
+(FL-2019-000120-PHL-ndwi, hasMoistureLevel, highMoisture)  
+(FL-2019-000120-PHL-ndwi, hasLandCover, saturatedLand)  
+(FL-2019-000120-PHL-ndwi, adjacentTo, darkAreas)  
+(FL-2019-000120-PHL-ndwi, mayIndicate, floodPresence)  
+(FL-2019-000120-PHL-ndwi, containsFeature, orangePatches)  

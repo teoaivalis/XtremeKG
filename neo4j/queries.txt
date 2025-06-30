@@ -1,0 +1,123 @@
+##########################################################################
+# Neo4j Preview
+http://localhost:7474/browser/preview/
+
+# Neodash (Dashboard GUI)
+sudo docker run -p 5005:5005 -d neo4jlabs/neodash
+sudo docker start neodash
+http://localhost:5005
+##########################################################################
+
+### Core Graph Queries ###
+
+# 0. List all relationship types
+MATCH ()-[r]->() 
+RETURN DISTINCT type(r) AS Relationship 
+ORDER BY Relationship;
+
+# 1. View attributes of a specific disaster
+MATCH (d:Disaster {name: "FL-2021-000147-THA"})-[r]->(a:Attribute)
+RETURN type(r) AS Relationship, a.name AS Attribute
+ORDER BY Relationship;
+
+# 2. Visualise a disaster and its attributes
+MATCH (d:Disaster {name: "FL-2021-000147-THA"})-[r]->(a) 
+RETURN d, r, a;
+
+# 3. Top 10 disasters by people affected
+MATCH (d:Disaster)-[:peopleAffected]->(a:Attribute),
+      (d)-[:hasDate]->(date:Attribute)
+WHERE a.name =~ '^[0-9,]+$'
+WITH d.name AS Disaster, date.name AS Date, 
+     toInteger(REPLACE(a.name, ",", "")) AS PeopleAffected
+RETURN Disaster, Date, PeopleAffected
+ORDER BY PeopleAffected DESC
+LIMIT 10;
+
+# 4. All disasters in Afghanistan
+MATCH (d:Disaster)-[:hasCountry]->(r:Region {name: "Afghanistan"})
+RETURN d.name AS DisasterName, r.name AS Country
+ORDER BY DisasterName;
+
+# 5. Top 10 disasters by total houses affected
+MATCH (d:Disaster)-[:housesCollapsed]->(hc:Attribute),
+      (d)-[:housesFlooded]->(hf:Attribute),
+      (d)-[:hasDate]->(date:Attribute)
+WHERE hc.name =~ '^[0-9,]+$' AND hf.name =~ '^[0-9,]+$'
+WITH d.name AS Disaster, date.name AS Date,
+     toInteger(REPLACE(hc.name, ",", "")) AS HousesCollapsed,
+     toInteger(REPLACE(hf.name, ",", "")) AS HousesFlooded
+RETURN Disaster, Date, HousesCollapsed, HousesFlooded,
+       (HousesCollapsed + HousesFlooded) AS TotalHousesAffected
+ORDER BY TotalHousesAffected DESC
+LIMIT 10;
+
+# 6. Top 10 disasters by fatalities
+MATCH (d:Disaster)-[:fatalitiesReported]->(f:Attribute),
+      (d)-[:hasDate]->(date:Attribute)
+WHERE f.name =~ '^[0-9,]+$'
+WITH d.name AS Disaster, date.name AS Date, 
+     toInteger(REPLACE(f.name, ",", "")) AS FatalitiesReported
+RETURN Disaster, Date, FatalitiesReported
+ORDER BY FatalitiesReported DESC
+LIMIT 10;
+
+# 7. Disasters in Europe based on coordinates
+MATCH (d:Disaster)-[:hasLatitude]->(lat:Attribute),
+      (d)-[:hasLongitude]->(lon:Attribute),
+      (d)-[:hasDate]->(date:Attribute),
+      (d)-[:hasRegion]->(region:Region)
+WHERE d.name STARTS WITH "FL" AND
+      toFloat(lat.name) >= 34.0 AND toFloat(lat.name) <= 81.0 AND
+      toFloat(lon.name) >= -25.0 AND toFloat(lon.name) <= 70.0
+RETURN region.name AS Region, date.name AS Date, 
+       toFloat(lat.name) AS Latitude, toFloat(lon.name) AS Longitude
+ORDER BY Date;
+
+### Similarity and Image-Attribute Matching ###
+
+# 8. Top 10 disasters similar to Thailand (based on natural features)
+MATCH (target:Disaster {name: "FL-2021-000147-THA"})-[r]->(f:Attribute)
+WHERE type(r) IN ["hasWaters", "hasWoods", "hasWetlands", "hasTrees", "hasMountainRanges"]
+WITH target, COLLECT(f.name) AS targetFeatures
+MATCH (other:Disaster)-[r2]->(f2:Attribute)
+WHERE type(r2) IN ["hasWaters", "hasWoods", "hasWetlands", "hasTrees", "hasMountainRanges"]
+  AND other.name <> target.name
+WITH other.name AS Disaster,
+     COLLECT(f2.name) AS otherFeatures,
+     targetFeatures
+WITH Disaster,
+     REDUCE(count = 0, f IN otherFeatures |
+        CASE WHEN f IN targetFeatures THEN count + 1 ELSE count END) AS SharedFeatureCount
+RETURN Disaster, SharedFeatureCount
+ORDER BY SharedFeatureCount DESC
+LIMIT 10;
+
+# 9. Top 6 visually similar images (based on visual image properties)
+MATCH (target:Image {name: "FL-2021-000190-EGY-visual"})-[r1]->(p1:Attribute)
+WITH target, collect({prop: type(r1), value: p1.name}) AS targetProps
+MATCH (other:Image)-[r]->(p:Attribute)
+WHERE other <> target
+WITH target, targetProps, other,
+     collect({prop: type(r), value: p.name}) AS otherProps,
+     REDUCE(score = 0, p IN collect({prop: type(r), value: p.name}) |
+            CASE WHEN p IN targetProps THEN score + 1 ELSE score END) AS Overlap
+RETURN other.name AS SimilarImage, Overlap
+ORDER BY Overlap DESC
+LIMIT 6;
+
+# 10. NDWI Image similarity (e.g., water index analysis)
+MATCH (target:Image {name: "FL-2019-000120-PHL-ndwi"})-[r1]->(p1:Attribute)
+WITH target, collect({prop: type(r1), value: p1.name}) AS targetProps
+MATCH (other:Image)-[r]->(p:Attribute)
+WHERE other <> target
+WITH other,
+     collect({prop: type(r), value: p.name}) AS otherProps,
+     targetProps
+WITH other.name AS SimilarImage,
+     REDUCE(score = 0, p IN otherProps |
+         CASE WHEN p IN targetProps THEN score + 1 ELSE score END) AS Overlap
+RETURN SimilarImage, Overlap
+ORDER BY Overlap DESC
+LIMIT 6;
+

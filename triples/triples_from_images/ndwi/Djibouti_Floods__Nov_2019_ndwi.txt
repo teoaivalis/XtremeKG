@@ -1,0 +1,6 @@
+(FL-2019-000156-DJI, hasndwiimage, FL-2019-000156-DJI-ndwi)
+(FL-2019-000156-DJI-ndwi, showsFeature, waterBodies)  
+(FL-2019-000156-DJI-ndwi, hasLandCover, drySurfaces)  
+(FL-2019-000156-DJI-ndwi, hasMoistureLevel, highMoisture)  
+(FL-2019-000156-DJI-ndwi, mayIndicate, floodPresence)  
+(FL-2019-000156-DJI-ndwi, experiencing, flooding)  
