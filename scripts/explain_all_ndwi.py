@@ -5,8 +5,8 @@ import os
 # === Config ===
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL = "qwen2.5vl:32b"
-IMAGE_FOLDER = "./after_collected_ndwi"  # NDWI image folder
-OUTPUT_SUBFOLDER = "after_collected_ndwi_triples"
+IMAGE_FOLDER = "/data/after_collected_ndwi"  # NDWI image folder
+OUTPUT_SUBFOLDER = "/data/after_collected_ndwi_triples"
 REQUEST_TIMEOUT = 40
 
 # Define the full path for the output subfolder

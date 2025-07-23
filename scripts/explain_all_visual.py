@@ -5,8 +5,8 @@ import os
 # === Config ===
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL = "qwen2.5vl:32b"
-IMAGE_FOLDER = "/home/teoaivalis/after_collected_visual"  # Folder containing your images
-OUTPUT_SUBFOLDER = "after_collected_visual_triples"  # Name of the subfolder to save text files
+IMAGE_FOLDER = "/data/after_collected_visual"  # Folder containing your images
+OUTPUT_SUBFOLDER = "/data/after_collected_visual_triples"  # Name of the subfolder to save text files
 REQUEST_TIMEOUT = 40  # Timeout in seconds
 
 # Define the full path for the output subfolder

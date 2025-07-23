@@ -4,8 +4,8 @@ import requests
 # === CONFIG ===
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "qwen2.5vl:32b"
-INFO_DIR = "/home/teoaivalis/flood_txts_full_info"
-OUTPUT_DIR = "/home/teoaivalis/new_disaster_full_triples"
+INFO_DIR = "/data/disaster_full_txts_one_line"
+OUTPUT_DIR = "/data/disaster_full_triples"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # === PROMPT TEMPLATE ===
